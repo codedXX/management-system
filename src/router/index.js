@@ -1,27 +1,48 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Main from '@/views/Main.vue';
+import User from '@/views/User.vue';
+import Home from '@/views/Home.vue';
+import Mall from '@/views/Mall.vue';
+import PageOne from '@/views/PageOne.vue';
+import PageTwo from '@/views/PageTwo.vue';
+import Login from '@/views/Login.vue';
+import Cookies from 'js-cookie';
+
 
 Vue.use(VueRouter)
 
-const routes = [
+const routes =[
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    name:'main',
+    path:'/',
+    component:Main,
+    redirect:'/home', //重定向
+    children:[
+    ]
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    name:'login',
+    path:'/login',
+    component:Login
   }
 ]
+
 
 const router = new VueRouter({
   routes
 })
+
+//全局前置守卫：初始化时执行、每次路由切换前执行
+router.beforeEach((to,from,next)=>{
+  const token = Cookies.get('token');
+  if(!token && to.path!=='/login'){
+    next({name:'login'})
+  }else{
+    next();
+  }
+
+})
+
 
 export default router
